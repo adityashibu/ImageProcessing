@@ -10,15 +10,22 @@
 #include <time.h>
 
 /* The RGB values of a pixel. */
-struct Pixel {
+struct Pixel
+{
     int red;
     int green;
     int blue;
 };
 
 /* An image loaded from a file. */
-struct Image {
+struct Image
+{
     /* TODO: Question 1 */
+    // Store the dimensions of the Image
+    int width;
+    int height;
+    // Pointer pixels of type struct Pixel, used to dynamically allocate an array of Pixel structs
+    struct Pixel *pixel;
 };
 
 /* Free a struct Image */
@@ -33,7 +40,8 @@ struct Image *load_image(const char *filename)
 {
     /* Open the file for reading */
     FILE *f = fopen(filename, "r");
-    if (f == NULL) {
+    if (f == NULL)
+    {
         fprintf(stderr, "File %s could not be opened.\n", filename);
         return NULL;
     }
@@ -45,7 +53,8 @@ struct Image *load_image(const char *filename)
     /* Close the file */
     fclose(f);
 
-    if (img == NULL) {
+    if (img == NULL)
+    {
         fprintf(stderr, "File %s could not be read.\n", filename);
         return NULL;
     }
@@ -95,27 +104,31 @@ int main(int argc, char *argv[])
     srand(time(NULL));
 
     /* Check command-line arguments */
-    if (argc != 3) {
+    if (argc != 3)
+    {
         fprintf(stderr, "Usage: process INPUTFILE OUTPUTFILE\n");
         return 1;
     }
 
     /* Load the input image */
     struct Image *in_img = load_image(argv[1]);
-    if (in_img == NULL) {
+    if (in_img == NULL)
+    {
         return 1;
     }
 
     /* Apply the first process */
     struct Image *out_img = apply_BLUR(in_img);
-    if (out_img == NULL) {
+    if (out_img == NULL)
+    {
         fprintf(stderr, "First process failed.\n");
         free_image(in_img);
         return 1;
     }
 
     /* Apply the second process */
-    if (!apply_NORM(out_img)) {
+    if (!apply_NORM(out_img))
+    {
         fprintf(stderr, "Second process failed.\n");
         free_image(in_img);
         free_image(out_img);
@@ -123,7 +136,8 @@ int main(int argc, char *argv[])
     }
 
     /* Save the output image */
-    if (!save_image(out_img, argv[2])) {
+    if (!save_image(out_img, argv[2]))
+    {
         fprintf(stderr, "Saving image to %s failed.\n", argv[2]);
         free_image(in_img);
         free_image(out_img);
