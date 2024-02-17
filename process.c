@@ -77,6 +77,19 @@ struct Image *load_image(const char *filename)
         return NULL;
     }
 
+    // Set image dimensions
+    img->width = width;
+    img->height = height;
+
+    // Allocate memory for the pixels
+    img->pixels = malloc(sizeof(struct Pixel) * width * height);
+    if (img->pixels == NULL)
+    {
+        fclose(f);
+        free(img);
+        fprintf(stderr, "Memory allocation for pixels of %s failed \n", filename);
+    }
+
     if (img == NULL)
     {
         fprintf(stderr, "File %s could not be read.\n", filename);
