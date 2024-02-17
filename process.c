@@ -170,10 +170,73 @@ struct Image *copy_image(const struct Image *source)
  * (TODO: Write a better comment here, and rename the function.
  * You may need to add or change arguments depending on the task.)
  * Returns a new struct Image containing the result, or NULL on error. */
-struct Image *apply_BLUR(const struct Image *source)
+struct Image *apply_NOISE(const struct Image *source, int noise)
 {
-    /* TODO: Question 3 */
-    return NULL;
+    // Allocate memory for the new image
+    struct Image *result = malloc(sizeof(struct Image));
+    if (result == NULL)
+    {
+        fprintf(stderr, "Memory allocation for result image failed \n");
+        return NULL;
+    }
+
+    result->width = source->width;
+    result->height = source->height;
+
+    // Allocate memory for pixels of result image
+    result->pixels = malloc(sizeof(struct Pixel) * source->width * source->height);
+    if (result->pixels == NULL)
+    {
+        fprintf(stderr, "Memory allocation for pixels of result image failed \n");
+        free(result);
+        return NULL;
+    }
+
+    srand(time(NULL));
+
+    for (int i = 0; i < source->width * source->height; i++)
+    {
+        int noiseRed = rand() % (2 * noise + 1) - noise;
+        int noiseGreen = rand() % (2 * noise + 1) - noise;
+        int noiseBlue = rand() % (2 * noise + 1) - noise;
+
+        int newRed = source->pixels[i].red + noiseRed;
+        // Make sure the noise is within the valid range
+        if (newRed < 0)
+        {
+            newRed = 0;
+        }
+        else if (newRed > 255)
+        {
+            newRed = 255;
+        }
+
+        int newGreen = source->pixels[i].green + noiseGreen;
+        if (newGreen < 0)
+        {
+            newGreen = 0;
+        }
+        else if (newGreen > 255)
+        {
+            newGreen = 255;
+        }
+
+        int newBlue = source->pixels[i].blue + noiseBlue;
+        if (newBlue < 0)
+        {
+            newBlue = 0;
+        }
+        else if (newBlue > 255)
+        {
+            newBlue = 255;
+        }
+
+        result->pixels[i].red = (unsigned short)newRed;
+        result->pixels[i].green = (unsigned short)newGreen;
+        result->pixels[i].blue = (unsigned short)newBlue;
+    }
+
+    return result;
 }
 
 /* Perform your second task.
