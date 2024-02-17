@@ -69,7 +69,7 @@ struct Image *load_image(const char *filename)
         fprintf(stderr, "Errror reading header of %s \n", filename);
         return NULL;
     }
-    else if (strcomp(header, "HS16") != 0)
+    else if (strcmp(header, "HS16") != 0)
     {
         fclose(f);
         free(img);
@@ -141,54 +141,54 @@ bool apply_NORM(const struct Image *source)
     return false;
 }
 
-int main(int argc, char *argv[])
-{
-    /* Initialise the random number generator, using the time as the seed */
-    /* TODO: Remove this if you don't need to use rand() */
-    srand(time(NULL));
+// int main(int argc, char *argv[])
+// {
+//     /* Initialise the random number generator, using the time as the seed */
+//     /* TODO: Remove this if you don't need to use rand() */
+//     srand(time(NULL));
 
-    /* Check command-line arguments */
-    if (argc != 3)
-    {
-        fprintf(stderr, "Usage: process INPUTFILE OUTPUTFILE\n");
-        return 1;
-    }
+//     /* Check command-line arguments */
+//     if (argc != 3)
+//     {
+//         fprintf(stderr, "Usage: process INPUTFILE OUTPUTFILE\n");
+//         return 1;
+//     }
 
-    /* Load the input image */
-    struct Image *in_img = load_image(argv[1]);
-    if (in_img == NULL)
-    {
-        return 1;
-    }
+//     /* Load the input image */
+//     struct Image *in_img = load_image(argv[1]);
+//     if (in_img == NULL)
+//     {
+//         return 1;
+//     }
 
-    /* Apply the first process */
-    struct Image *out_img = apply_BLUR(in_img);
-    if (out_img == NULL)
-    {
-        fprintf(stderr, "First process failed.\n");
-        free_image(in_img);
-        return 1;
-    }
+//     /* Apply the first process */
+//     struct Image *out_img = apply_BLUR(in_img);
+//     if (out_img == NULL)
+//     {
+//         fprintf(stderr, "First process failed.\n");
+//         free_image(in_img);
+//         return 1;
+//     }
 
-    /* Apply the second process */
-    if (!apply_NORM(out_img))
-    {
-        fprintf(stderr, "Second process failed.\n");
-        free_image(in_img);
-        free_image(out_img);
-        return 1;
-    }
+//     /* Apply the second process */
+//     if (!apply_NORM(out_img))
+//     {
+//         fprintf(stderr, "Second process failed.\n");
+//         free_image(in_img);
+//         free_image(out_img);
+//         return 1;
+//     }
 
-    /* Save the output image */
-    if (!save_image(out_img, argv[2]))
-    {
-        fprintf(stderr, "Saving image to %s failed.\n", argv[2]);
-        free_image(in_img);
-        free_image(out_img);
-        return 1;
-    }
+//     /* Save the output image */
+//     if (!save_image(out_img, argv[2]))
+//     {
+//         fprintf(stderr, "Saving image to %s failed.\n", argv[2]);
+//         free_image(in_img);
+//         free_image(out_img);
+//         return 1;
+//     }
 
-    free_image(in_img);
-    free_image(out_img);
-    return 0;
-}
+//     free_image(in_img);
+//     free_image(out_img);
+//     return 0;
+// }

@@ -10,6 +10,9 @@
 # Make files
 process
 
+# Object files
+*.o
+
 # Linker output
 *.ilk
 *.map
