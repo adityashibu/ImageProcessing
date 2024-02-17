@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdbool.h>
 #include "process.c"
 
 // Main to test load_image
@@ -22,6 +23,7 @@ int main()
 */
 
 // Main to test save_image
+/*
 int main()
 {
     const char *input_filename = "coffee.hs16";
@@ -50,6 +52,58 @@ int main()
 
     // Free memory allocated for the image
     free_image(image);
+
+    return 0;
+}
+*/
+
+// Main to test copy_image
+int main()
+{
+    const char *filename = "coffee.hs16";
+
+    // Load the original image
+    struct Image *original = load_image(filename);
+    if (original == NULL)
+    {
+        fprintf(stderr, "Failed to load the original image from file %s\n", filename);
+        return 1;
+    }
+
+    // Create a copy of the original image
+    struct Image *copy = copy_image(original);
+    if (copy == NULL)
+    {
+        fprintf(stderr, "Failed to create a copy of the original image\n");
+        free_image(original);
+        return 1;
+    }
+
+    // Compare each pixel of the original image with the corresponding pixel in the copied image
+    bool identical = true;
+    for (int i = 0; i < original->width * original->height; i++)
+    {
+        if (original->pixels[i].red != copy->pixels[i].red ||
+            original->pixels[i].green != copy->pixels[i].green ||
+            original->pixels[i].blue != copy->pixels[i].blue)
+        {
+            identical = false;
+            break;
+        }
+    }
+
+    if (identical)
+    {
+        printf("The copy operation is successful. The original and copied images are identical.\n");
+    }
+    else
+    {
+        printf("The copy operation failed. The original and copied images are not identical.\n");
+    }
+
+    // Free memory allocated for the original and copied images
+    free_image(original);
+    free_image(copy);
 
     return 0;
 }

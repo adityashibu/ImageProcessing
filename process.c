@@ -137,8 +137,33 @@ bool save_image(const struct Image *img, const char *filename)
  * into it. On error, returns NULL. */
 struct Image *copy_image(const struct Image *source)
 {
-    /* TODO: Question 2d */
-    return NULL;
+    struct Image *copy = malloc(sizeof(struct Image));
+    if (copy == NULL)
+    {
+        fprintf(stderr, "Memory allocation failed for the copied image \n");
+        return NULL;
+    }
+
+    // Copy the image dimensions
+    copy->width = source->width;
+    copy->height = source->height;
+
+    // Allocate memory for the pixels
+    copy->pixels = malloc(sizeof(struct Pixel) * source->width * source->height);
+    if (copy->pixels == NULL)
+    {
+        fprintf(stderr, "Error allocating memory for pixels");
+        free(copy);
+        return NULL;
+    }
+
+    // Use a loop to copy pixel data from source to copy
+    for (int i = 0; i < source->width * source->height; i++)
+    {
+        copy->pixels[i] = source->pixels[i];
+    }
+
+    return copy;
 }
 
 /* Perform your first task.
