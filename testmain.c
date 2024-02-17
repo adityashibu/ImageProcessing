@@ -58,6 +58,7 @@ int main()
 */
 
 // Main to test copy_image
+/*
 int main()
 {
     const char *filename = "coffee.hs16";
@@ -105,5 +106,47 @@ int main()
     free_image(original);
     free_image(copy);
 
+    return 0;
+}
+*/
+
+// Main to test apply_NOISE
+int main()
+{
+    const char *input_filename = "coffee.hs16";
+    const char *output_filename = "noisy_coffee.hs16";
+    int noise_strength = 10; // Adjust noise strength as needed
+
+    // Load the original image
+    struct Image *original = load_image(input_filename);
+    if (original == NULL)
+    {
+        fprintf(stderr, "Failed to load the original image.\n");
+        return 1;
+    }
+
+    // Apply noise to the original image
+    struct Image *noisy_image = apply_NOISE(original, noise_strength);
+    if (noisy_image == NULL)
+    {
+        fprintf(stderr, "Failed to apply noise to the image.\n");
+        free_image(original);
+        return 1;
+    }
+
+    // Save the noisy image
+    if (!save_image(noisy_image, output_filename))
+    {
+        fprintf(stderr, "Failed to save the noisy image.\n");
+        free_image(original);
+        free_image(noisy_image);
+        return 1;
+    }
+
+    // Free memory
+    free_image(original);
+    free_image(noisy_image);
+
+    printf("Noisy image saved successfully as %s.\n", output_filename);
     return 0;
 }
