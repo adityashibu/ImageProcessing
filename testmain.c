@@ -3,7 +3,7 @@
 
 int main()
 {
-    const char *filename = "coffee.hs16";
+    const char *filename = "bars.hs16";
     struct Image *img = load_image(filename);
 
     if (img == NULL)
