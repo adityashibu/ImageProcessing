@@ -109,21 +109,28 @@ struct Image *load_image(const char *filename)
 /* Write img to file filename. Return true on success, false on error. */
 bool save_image(const struct Image *img, const char *filename)
 {
-    // Load the Image
-    struct Image *loadedImage = load_image(filename);
-    if (loadedImage == NULL)
+    // Open the file to write to
+    FILE *file = fopen(filename, "wb");
+    if (file == NULL)
     {
-        fprintf(stderr, "Error loading %s \n", filename);
+        fprintf(stderr, "Error opening file for writing to \n");
         return false;
     }
 
-    // Case to check if the loaded file dimensions match the original dimensions
-    if (loadedImage->width != img->width || loadedImage->height != img->height)
+    // Write the header
+    fprintf(file, "HS16 %d %d\n", img->width, img->height);
+
+    // Write pixel data
+    size_t numPixels = img->width * img->height;
+    size_t pixelsWritten = fwrite(img->pixels, sizeof(struct Pixel), numPixels, file);
+    if (pixelsWritten != numPixels)
     {
-        fprintf(stderr, "Loaded image dimensions do not match");
-        free_image(loadedImage);
+        fprintf(stderr, "Error writing pixel data to %s \n", filename);
         return false;
     }
+
+    fclose(file);
+    return true;
 }
 
 /* Allocate a new struct Image and copy an existing struct Image's contents
