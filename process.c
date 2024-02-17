@@ -59,8 +59,23 @@ struct Image *load_image(const char *filename)
         return NULL;
     }
 
-    /* Close the file */
-    fclose(f);
+    // Reading header
+    char header[5];
+    int width, height;
+    if (fscanf(f, "%4s %d %d\n", header, &width, &height) != 3)
+    {
+        fclose(f);
+        free(img);
+        fprintf(stderr, "Errror reading header of %s \n", filename);
+        return NULL;
+    }
+    else if (strcomp(header, "HS16") != 0)
+    {
+        fclose(f);
+        free(img);
+        fprintf(stderr, "Errror in header format of %s \n", filename);
+        return NULL;
+    }
 
     if (img == NULL)
     {
