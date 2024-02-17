@@ -25,13 +25,16 @@ struct Image
     int width;
     int height;
     // Pointer pixels of type struct Pixel, used to dynamically allocate an array of Pixel structs
-    struct Pixel *pixel;
+    struct Pixel *pixels;
 };
 
 /* Free a struct Image */
 void free_image(struct Image *img)
 {
-    /* TODO: Question 2a */
+    // Free the dynamically allocated array of pixel structs
+    free(img->pixels);
+    // Free the image itself
+    free(img);
 }
 
 /* Opens and reads an image file, returning a pointer to a new struct Image.
