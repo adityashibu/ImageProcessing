@@ -13,6 +13,10 @@ process
 # Object files
 *.o
 
+# Image files
+*.hs16
+*.ppm
+
 # Linker output
 *.ilk
 *.map
