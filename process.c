@@ -90,11 +90,18 @@ struct Image *load_image(const char *filename)
         fprintf(stderr, "Memory allocation for pixels of %s failed \n", filename);
     }
 
-    if (img == NULL)
+    // Read pixel data
+    size_t numPixels = width * height;
+    size_t pixelData = fread(img->pixels, sizeof(struct Pixel), numPixels, f);
+    if (pixelData != numPixels)
     {
-        fprintf(stderr, "File %s could not be read.\n", filename);
+        fclose(f);
+        free_image(img);
+        fprintf(stderr, "Error reading pixel data of %s \n", filename);
         return NULL;
     }
+
+    fclose(f);
 
     return img;
 }
