@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <stdbool.h>
-#include "process.c"
+#include "testprocess.c"
 
 // Main to test load_image
 /*
@@ -115,7 +115,7 @@ int main()
 {
     const char *input_filename = "coffee.hs16";
     const char *output_filename = "noisy_coffee.hs16";
-    int noise_strength = 10; // Adjust noise strength as needed
+    int noise_strength = 0; // Adjust noise strength as needed
 
     // Load the original image
     struct Image *original = load_image(input_filename);
