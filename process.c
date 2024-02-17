@@ -12,9 +12,9 @@
 /* The RGB values of a pixel. */
 struct Pixel
 {
-    int red;
-    int green;
-    int blue;
+    unsigned short red;
+    unsigned short green;
+    unsigned short blue;
 };
 
 /* An image loaded from a file. */
