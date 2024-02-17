@@ -109,8 +109,21 @@ struct Image *load_image(const char *filename)
 /* Write img to file filename. Return true on success, false on error. */
 bool save_image(const struct Image *img, const char *filename)
 {
-    /* TODO: Question 2c */
-    return false;
+    // Load the Image
+    struct Image *loadedImage = load_image(filename);
+    if (loadedImage == NULL)
+    {
+        fprintf(stderr, "Error loading %s \n", filename);
+        return false;
+    }
+
+    // Case to check if the loaded file dimensions match the original dimensions
+    if (loadedImage->width != img->width || loadedImage->height != img->height)
+    {
+        fprintf(stderr, "Loaded image dimensions do not match");
+        free_image(loadedImage);
+        return false;
+    }
 }
 
 /* Allocate a new struct Image and copy an existing struct Image's contents
