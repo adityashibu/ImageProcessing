@@ -42,7 +42,7 @@ void free_image(struct Image *img)
 struct Image *load_image(const char *filename)
 {
     /* Open the file for reading */
-    FILE *f = fopen(filename, "r");
+    FILE *f = fopen(filename, "rb");
     if (f == NULL)
     {
         fprintf(stderr, "File %s could not be opened.\n", filename);
@@ -51,7 +51,13 @@ struct Image *load_image(const char *filename)
 
     /* Allocate the Image object, and read the image from the file */
     /* TODO: Question 2b */
-    struct Image *img = NULL;
+    struct Image *img = malloc(sizeof(struct Image));
+    if (img == NULL)
+    {
+        fclose(f);
+        fprintf(stderr, "Memory allocation for %s failed \n", filename);
+        return NULL;
+    }
 
     /* Close the file */
     fclose(f);
