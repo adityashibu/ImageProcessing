@@ -263,54 +263,58 @@ bool apply_CODE(const struct Image *source)
     return true;
 }
 
-// int main(int argc, char *argv[])
-// {
-//     /* Initialise the random number generator, using the time as the seed */
-//     /* TODO: Remove this if you don't need to use rand() */
-//     srand(time(NULL));
+int main(int argc, char *argv[])
+{
+    /* Check command-line arguments */
+    if (argc != 4)
+    {
+        fprintf(stderr, "Usage: process INPUTFILE OUTPUTFILE NOISE_STRENGTH\n");
+        return 1;
+    }
 
-//     /* Check command-line arguments */
-//     if (argc != 3)
-//     {
-//         fprintf(stderr, "Usage: process INPUTFILE OUTPUTFILE\n");
-//         return 1;
-//     }
+    /* Load the input image */
+    struct Image *in_img = load_image(argv[1]);
+    if (in_img == NULL)
+    {
+        return 1;
+    }
 
-//     /* Load the input image */
-//     struct Image *in_img = load_image(argv[1]);
-//     if (in_img == NULL)
-//     {
-//         return 1;
-//     }
+    int noise_strength;
+    if (sscanf(argv[3], "%d", &noise_strength) != 1)
+    {
+        fprintf(stderr, "Invalid noise strength: %s\n", argv[3]);
+        free_image(in_img);
+        return 1;
+    }
 
-//     /* Apply the first process */
-//     struct Image *out_img = apply_BLUR(in_img);
-//     if (out_img == NULL)
-//     {
-//         fprintf(stderr, "First process failed.\n");
-//         free_image(in_img);
-//         return 1;
-//     }
+    /* Apply the first process */
+    struct Image *out_img = apply_NOISE(in_img, noise_strength);
+    if (out_img == NULL)
+    {
+        fprintf(stderr, "First process failed.\n");
+        free_image(in_img);
+        return 1;
+    }
 
-//     /* Apply the second process */
-//     if (!apply_NORM(out_img))
-//     {
-//         fprintf(stderr, "Second process failed.\n");
-//         free_image(in_img);
-//         free_image(out_img);
-//         return 1;
-//     }
+    /* Apply the second process */
+    if (!apply_CODE(out_img))
+    {
+        fprintf(stderr, "Second process failed.\n");
+        free_image(in_img);
+        free_image(out_img);
+        return 1;
+    }
 
-//     /* Save the output image */
-//     if (!save_image(out_img, argv[2]))
-//     {
-//         fprintf(stderr, "Saving image to %s failed.\n", argv[2]);
-//         free_image(in_img);
-//         free_image(out_img);
-//         return 1;
-//     }
+    /* Save the output image */
+    if (!save_image(out_img, argv[2]))
+    {
+        fprintf(stderr, "Saving image to %s failed.\n", argv[2]);
+        free_image(in_img);
+        free_image(out_img);
+        return 1;
+    }
 
-//     free_image(in_img);
-//     free_image(out_img);
-//     return 0;
-// }
+    free_image(in_img);
+    free_image(out_img);
+    return 0;
+}
