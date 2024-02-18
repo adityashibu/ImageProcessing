@@ -112,6 +112,7 @@ int main()
 */
 
 // Main to test apply_NOISE
+/*
 int main(int argc, char **argv)
 {
     if (argc < 3)
@@ -161,4 +162,22 @@ int main(int argc, char **argv)
     free_image(noisy_img);
 
     return 0;
+}
+*/
+
+// Main to check for apply_CODE
+int main()
+{
+    const char *filename = "coffee.hs16";
+    struct Image *img = load_image(filename);
+
+    bool success = apply_CODE(img);
+    if (!success)
+    {
+        printf("Error applying apply_CODE");
+    }
+
+    free_image(img);
+
+    return success ? 0 : 1;
 }

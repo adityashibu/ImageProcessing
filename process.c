@@ -230,8 +230,37 @@ struct Image *apply_NOISE(const struct Image *source, int noise_strength)
  * Returns true on success, or false on error. */
 bool apply_CODE(const struct Image *source)
 {
-    /* TODO: Question 4 */
-    return false;
+    if (source == NULL)
+    {
+        printf("Error reading file \n");
+        return false;
+    }
+
+    printf("const in image_width = %d;\n", source->width);
+    printf("const int image_height = %d;\n", source->height);
+    printf("const struct Pixel image_data = {\n");
+
+    printf("    ");
+    for (int i = 0; i < source->width * source->height; i++)
+    {
+        printf("{%hu, %hu, %hu}", source->pixels[i].red, source->pixels[i].green, source->pixels[i].blue);
+
+        if (i != source->width * source->height - 1)
+        {
+            printf(", ");
+        }
+
+        if ((i + 1) % 3 == 0)
+        {
+            printf("\n");
+            printf("    ");
+        }
+    }
+
+    printf("\n");
+    printf("} \n");
+
+    return true;
 }
 
 // int main(int argc, char *argv[])

@@ -248,10 +248,36 @@ struct Image *apply_NOISE(struct Image *source, int noise_strength)
  * (TODO: Write a better comment here, and rename the function.
  * You may need to add or change arguments depending on the task.)
  * Returns true on success, or false on error. */
-bool apply_NORM(const struct Image *source)
+bool apply_CODE(const struct Image *source)
 {
-    /* TODO: Question 4 */
-    return false;
+    printf("const int image_width = %d;\n", source->width);
+    printf("const int image_height = %d;\n", source->height);
+    printf("const struct Pixel image_data = {\n");
+
+    int row_width = (source->width * 3 * 4 + 2) / 3; // 3(R, G, B) * 4(short) + 2(spaces)
+    int i = 0;
+    printf("    ");
+    for (int y = 0; y < source->height; y++)
+    {
+        for (int x = 0; x < source->width; x++)
+        {
+            if (x > 0 && (i + 1) % row_width == 0)
+            {
+                printf("\n    ");
+            }
+            else if (x > 0)
+            {
+                printf(", ");
+            }
+            const struct Pixel *px = &source->pixels[y * source->width + x];
+            printf("{%d, %d, %d}", px->red, px->green, px->blue);
+            i++;
+        }
+        printf("\n");
+        printf("} \n");
+    }
+
+    return true;
 }
 
 // int main(int argc, char *argv[])
