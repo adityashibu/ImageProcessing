@@ -228,7 +228,7 @@ struct Image *apply_NOISE(const struct Image *source, int noise_strength)
  * (TODO: Write a better comment here, and rename the function.
  * You may need to add or change arguments depending on the task.)
  * Returns true on success, or false on error. */
-bool apply_NORM(const struct Image *source)
+bool apply_CODE(const struct Image *source)
 {
     /* TODO: Question 4 */
     return false;
