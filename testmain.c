@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdbool.h>
-#include "testprocess.c"
+// #include "testprocess.c"
+#include "process.c"
 
 // Main to test load_image
 /*

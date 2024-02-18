@@ -170,25 +170,12 @@ struct Image *copy_image(const struct Image *source)
  * (TODO: Write a better comment here, and rename the function.
  * You may need to add or change arguments depending on the task.)
  * Returns a new struct Image containing the result, or NULL on error. */
-struct Image *apply_NOISE(const struct Image *source, int noise)
+struct Image *apply_NOISE(const struct Image *source, int noise_strength)
 {
-    // Allocate memory for the new image
-    struct Image *result = malloc(sizeof(struct Image));
-    if (result == NULL)
+    struct Image *copy = copy_image(source);
+    if (copy == NULL)
     {
-        fprintf(stderr, "Memory allocation for result image failed \n");
-        return NULL;
-    }
-
-    result->width = source->width;
-    result->height = source->height;
-
-    // Allocate memory for pixels of result image
-    result->pixels = malloc(sizeof(struct Pixel) * source->width * source->height);
-    if (result->pixels == NULL)
-    {
-        fprintf(stderr, "Memory allocation for pixels of result image failed \n");
-        free(result);
+        fprintf(stderr, "Error copying image to apply Noise");
         return NULL;
     }
 
@@ -196,47 +183,45 @@ struct Image *apply_NOISE(const struct Image *source, int noise)
 
     for (int i = 0; i < source->width * source->height; i++)
     {
-        int noiseRed = rand() % (2 * noise + 1) - noise;
-        int noiseGreen = rand() % (2 * noise + 1) - noise;
-        int noiseBlue = rand() % (2 * noise + 1) - noise;
+        int noiseRed = rand() % (2 * noise_strength + 1) - noise_strength;
+        int noiseGreen = rand() % (2 * noise_strength + 1) - noise_strength;
+        int noiseBlue = rand() % (2 * noise_strength + 1) - noise_strength;
 
-        int newRed = source->pixels[i].red + noiseRed;
-        // Make sure the noise is within the valid range
+        int newRed = copy->pixels[i].red + noiseRed;
         if (newRed < 0)
         {
             newRed = 0;
         }
-        else if (newRed > 255)
+        else if (newRed > 65535)
         {
-            newRed = 255;
+            newRed = 65535;
         }
 
-        int newGreen = source->pixels[i].green + noiseGreen;
+        int newGreen = copy->pixels[i].green + noiseGreen;
         if (newGreen < 0)
         {
             newGreen = 0;
         }
-        else if (newGreen > 255)
+        else if (newGreen > 65535)
         {
-            newGreen = 255;
+            newGreen = 65535;
         }
 
-        int newBlue = source->pixels[i].blue + noiseBlue;
+        int newBlue = copy->pixels[i].blue + noiseBlue;
         if (newBlue < 0)
         {
             newBlue = 0;
         }
-        else if (newBlue > 255)
+        else if (newBlue > 65535)
         {
-            newBlue = 255;
+            newBlue = 65535;
         }
 
-        result->pixels[i].red = (unsigned short)newRed;
-        result->pixels[i].green = (unsigned short)newGreen;
-        result->pixels[i].blue = (unsigned short)newBlue;
+        copy->pixels[i].red = (unsigned short)newRed;
+        copy->pixels[i].green = (unsigned short)newGreen;
+        copy->pixels[i].blue = (unsigned short)newBlue;
     }
-
-    return result;
+    return copy;
 }
 
 /* Perform your second task.
