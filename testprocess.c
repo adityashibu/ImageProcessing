@@ -186,56 +186,59 @@ struct Image *apply_NOISE(struct Image *source, int noise_strength)
     srand(time(NULL));
 
     // Iterate over all pixels in the image
-    for (int i = 0; i < copy->width * copy->height; i++)
+    // for (int i = 0; i < copy->width * copy->height; i++)
+    // {
+    //     // Add random noise to each color component
+    //     copy->pixels[i].red += rand() % (noise_strength * 2 + 1) - noise_strength;
+    //     copy->pixels[i].green += rand() % (noise_strength * 2 + 1) - noise_strength;
+    //     copy->pixels[i].blue += rand() % (noise_strength * 2 + 1) - noise_strength;
+
+    //     // Clamp the color components to the valid range (0-65535)
+    //     copy->pixels[i].red = copy->pixels[i].red < 0 ? 0 : (copy->pixels[i].red > 65535 ? 65535 : copy->pixels[i].red);
+    //     copy->pixels[i].green = copy->pixels[i].green < 0 ? 0 : (copy->pixels[i].green > 65535 ? 65535 : copy->pixels[i].green);
+    //     copy->pixels[i].blue = copy->pixels[i].blue < 0 ? 0 : (copy->pixels[i].blue > 65535 ? 65535 : copy->pixels[i].blue);
+    // }
+
+    for (int i = 0; i < source->width * source->height; i++)
     {
-        // Add random noise to each color component
-        copy->pixels[i].red += rand() % (noise_strength * 2 + 1) - noise_strength;
-        copy->pixels[i].green += rand() % (noise_strength * 2 + 1) - noise_strength;
-        copy->pixels[i].blue += rand() % (noise_strength * 2 + 1) - noise_strength;
+        int noiseRed = rand() % (2 * noise_strength + 1) - noise_strength;
+        int noiseGreen = rand() % (2 * noise_strength + 1) - noise_strength;
+        int noiseBlue = rand() % (2 * noise_strength + 1) - noise_strength;
 
-        // Clamp the color components to the valid range (0-65535)
-        copy->pixels[i].red = copy->pixels[i].red < 0 ? 0 : (copy->pixels[i].red > 65535 ? 65535 : copy->pixels[i].red);
-        copy->pixels[i].green = copy->pixels[i].green < 0 ? 0 : (copy->pixels[i].green > 65535 ? 65535 : copy->pixels[i].green);
-        copy->pixels[i].blue = copy->pixels[i].blue < 0 ? 0 : (copy->pixels[i].blue > 65535 ? 65535 : copy->pixels[i].blue);
+        int newRed = source->pixels[i].red + noiseRed;
+        // Make sure the noise is within the valid range (0-65535)
+        if (newRed < 0)
+        {
+            newRed = 0;
+        }
+        else if (newRed > 65535)
+        {
+            newRed = 65535;
+        }
 
-        // int noiseRed = rand() % (2 * noise_strength + 1) - noise_strength;
-        // int noiseGreen = rand() % (2 * noise_strength + 1) - noise_strength;
-        // int noiseBlue = rand() % (2 * noise_strength + 1) - noise_strength;
+        int newGreen = source->pixels[i].green + noiseGreen;
+        if (newGreen < 0)
+        {
+            newGreen = 0;
+        }
+        else if (newGreen > 65535)
+        {
+            newGreen = 65535;
+        }
 
-        // int newRed = source->pixels[i].red + noiseRed;
-        // // Make sure the noise is within the valid range
-        // if (newRed < 0)
-        // {
-        //     newRed = 0;
-        // }
-        // else if (newRed > 255)
-        // {
-        //     newRed = 255;
-        // }
+        int newBlue = source->pixels[i].blue + noiseBlue;
+        if (newBlue < 0)
+        {
+            newBlue = 0;
+        }
+        else if (newBlue > 65535)
+        {
+            newBlue = 65535;
+        }
 
-        // int newGreen = source->pixels[i].green + noiseGreen;
-        // if (newGreen < 0)
-        // {
-        //     newGreen = 0;
-        // }
-        // else if (newGreen > 255)
-        // {
-        //     newGreen = 255;
-        // }
-
-        // int newBlue = source->pixels[i].blue + noiseBlue;
-        // if (newBlue < 0)
-        // {
-        //     newBlue = 0;
-        // }
-        // else if (newBlue > 255)
-        // {
-        //     newBlue = 255;
-        // }
-
-        // copy->pixels[i].red = (unsigned short)newRed;
-        // copy->pixels[i].green = (unsigned short)newGreen;
-        // copy->pixels[i].blue = (unsigned short)newBlue;
+        copy->pixels[i].red = (unsigned short)newRed;
+        copy->pixels[i].green = (unsigned short)newGreen;
+        copy->pixels[i].blue = (unsigned short)newBlue;
     }
 
     return copy;
