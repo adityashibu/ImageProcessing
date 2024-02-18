@@ -260,56 +260,63 @@ bool apply_CODE(const struct Image *source)
 
 int main(int argc, char *argv[])
 {
-    /* Check command-line arguments */
-    if (argc != 4)
+    if ((argc - 1) % 3 != 0 || argc < 4)
     {
-        fprintf(stderr, "Usage: process INPUTFILE OUTPUTFILE NOISE_STRENGTH\n");
+        fprintf(stderr, "Usage: process INPUTFILE1 OUTPUTFILE1 NOISE_STRENGTH1 INPUTFILE2 OUTPUTFILE2 NOISE_STRENGTH2 ...\n");
         return 1;
     }
 
-    /* Load the input image */
-    struct Image *in_img = load_image(argv[1]);
-    if (in_img == NULL)
-    {
-        return 1;
-    }
+    int pairs = (argc - 1) / 3;
 
-    int noise_strength;
-    if (sscanf(argv[3], "%d", &noise_strength) != 1)
+    for (int i = 0; i < pairs; i++)
     {
-        fprintf(stderr, "Invalid noise strength: %s\n", argv[3]);
-        free_image(in_img);
-        return 1;
-    }
+        char *input_file = argv[i * 3 + 1];
+        char *output_file = argv[i * 3 + 2];
+        int noise_strength;
 
-    /* Apply the first process */
-    struct Image *out_img = apply_NOISE(in_img, noise_strength);
-    if (out_img == NULL)
-    {
-        fprintf(stderr, "First process failed.\n");
-        free_image(in_img);
-        return 1;
-    }
+        if (sscanf(argv[i * 3 + 3], "%d", &noise_strength) != 1)
+        {
+            fprintf(stderr, "Invalid noise strength: %s\n", argv[i * 3 + 3]);
+            return 1;
+        }
 
-    /* Apply the second process */
-    if (!apply_CODE(out_img))
-    {
-        fprintf(stderr, "Second process failed.\n");
+        // Load input image
+        struct Image *in_img = load_image(input_file);
+        if (in_img == NULL)
+        {
+            fprintf(stderr, "Error loading in the input image");
+            return 1;
+        }
+
+        // Apply noise to the input image
+        struct Image *out_img = apply_NOISE(in_img, noise_strength);
+        if (out_img == NULL)
+        {
+            fprintf(stderr, "Error applying noise to the loaded image");
+            return 1;
+        }
+
+        // Apply code to the input image
+        if (!apply_CODE(out_img))
+        {
+            fprintf(stderr, "Error applying code to the loaded image");
+            free_image(in_img);
+            free_image(out_img);
+            return 1;
+        }
+
+        // Save the output image
+        if (!save_image(out_img, output_file))
+        {
+            fprintf(stderr, "Failed to save image to %s\n", output_file);
+            free_image(in_img);
+            free_image(out_img);
+            return 1;
+        }
+
         free_image(in_img);
         free_image(out_img);
-        return 1;
     }
 
-    /* Save the output image */
-    if (!save_image(out_img, argv[2]))
-    {
-        fprintf(stderr, "Saving image to %s failed.\n", argv[2]);
-        free_image(in_img);
-        free_image(out_img);
-        return 1;
-    }
-
-    free_image(in_img);
-    free_image(out_img);
     return 0;
 }
