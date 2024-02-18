@@ -1,8 +1,3 @@
-/* This coursework specification, and the example code provided during the
- * course, is Copyright 2024 Heriot-Watt University.
- * Distributing this coursework specification or your solution to it outside
- * the university is academic misconduct and a violation of copyright law. */
-
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
