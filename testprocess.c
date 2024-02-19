@@ -23,6 +23,15 @@ struct Image
     struct Pixel *pixels;
 };
 
+struct ImageNode
+{
+    struct Image *img;
+    char *input_file;
+    char *output_file;
+    int noise_strength;
+    struct ImageNode *next;
+};
+
 /* Free a struct Image */
 void free_image(struct Image *img)
 {
@@ -330,9 +339,105 @@ int main(int argc, char *argv[])
 {
     if ((argc - 1) % 3 != 0 || argc < 4)
     {
-        fprintf(stderr, "Usage: ./process inputfile1 outputfile1 noise_strenght1 inputfile2 outputfile2 noise_strength2 ..");
+        fprintf(stderr, "Usage: ./process inputfile1 outputfile1 noise_strength1 inputfile2 outputfile2 noise_strength2 ...\n");
         return 1;
     }
 
     int pairs = (argc - 1) / 3;
+
+    // Initialize the linked list head
+    struct ImageNode *head = NULL;
+    struct ImageNode *current = NULL;
+
+    // Populate the linked list with image data
+    for (int i = 0; i < pairs; i++)
+    {
+        char *input_file = argv[i * 3 + 1];
+        char *output_file = argv[i * 3 + 2];
+        int noise_strength;
+
+        if (sscanf(argv[i * 3 + 3], "%d", &noise_strength) != 1)
+        {
+            fprintf(stderr, "Invalid noise strength: %s\n", argv[i * 3 + 3]);
+            return 1;
+        }
+
+        // Create a new node for the linked list
+        struct ImageNode *new_node = malloc(sizeof(struct ImageNode));
+        if (new_node == NULL)
+        {
+            fprintf(stderr, "Memory allocation failed for new node\n");
+            return 1;
+        }
+
+        // Load input image
+        struct Image *in_img = load_image(input_file);
+        if (in_img == NULL)
+        {
+            fprintf(stderr, "Error loading in the input image: %s\n", input_file);
+            return 1;
+        }
+
+        // Populate the node with image data
+        new_node->img = in_img;
+        new_node->input_file = input_file;
+        new_node->output_file = output_file;
+        new_node->noise_strength = noise_strength;
+        new_node->next = NULL;
+
+        // Add the node to the linked list
+        if (head == NULL)
+        {
+            head = new_node;
+            current = new_node;
+        }
+        else
+        {
+            current->next = new_node;
+            current = new_node;
+        }
+    }
+
+    // Process all images in the linked list
+    current = head;
+    while (current != NULL)
+    {
+        struct Image *out_img = apply_NOISE(current->img, current->noise_strength);
+        if (out_img == NULL)
+        {
+            fprintf(stderr, "Error applying noise to the loaded image\n");
+            return 1;
+        }
+
+        if (!apply_CODE(out_img))
+        {
+            fprintf(stderr, "Error applying code to the loaded image\n");
+            free_image(out_img);
+            return 1;
+        }
+
+        if (!save_image(out_img, current->output_file))
+        {
+            fprintf(stderr, "Failed to save image to %s\n", current->output_file);
+            free_image(out_img);
+            return 1;
+        }
+
+        free_image(out_img);
+
+        // Move to the next node in the linked list
+        current = current->next;
+    }
+
+    // Free the linked list
+    current = head;
+    while (current != NULL)
+    {
+        struct ImageNode *temp = current;
+        current = current->next;
+        free_image(temp->img);
+        free(temp);
+    }
+
+    return 0;
 }
