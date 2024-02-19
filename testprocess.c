@@ -258,6 +258,9 @@ bool apply_CODE(const struct Image *source)
     return true;
 }
 
+// Int main without linked lists and arrays
+
+/*
 int main(int argc, char *argv[])
 {
     if ((argc - 1) % 3 != 0 || argc < 4)
@@ -319,4 +322,17 @@ int main(int argc, char *argv[])
     }
 
     return 0;
+}
+*/
+
+// Int main using linked list
+int main(int argc, char *argv[])
+{
+    if ((argc - 1) % 3 != 0 || argc < 4)
+    {
+        fprintf(stderr, "Usage: ./process inputfile1 outputfile1 noise_strenght1 inputfile2 outputfile2 noise_strength2 ..");
+        return 1;
+    }
+
+    int pairs = (argc - 1) / 3;
 }
