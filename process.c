@@ -20,20 +20,15 @@ struct Pixel
 /* An image loaded from a file. */
 struct Image
 {
-    /* TODO: Question 1 */
-    // Store the dimensions of the Image
     int width;
     int height;
-    // Pointer pixels of type struct Pixel, used to dynamically allocate an array of Pixel structs
     struct Pixel *pixels;
 };
 
 /* Free a struct Image */
 void free_image(struct Image *img)
 {
-    // Free the dynamically allocated array of pixel structs
     free(img->pixels);
-    // Free the image itself
     free(img);
 }
 
@@ -41,7 +36,6 @@ void free_image(struct Image *img)
  * On error, prints an error message and returns NULL. */
 struct Image *load_image(const char *filename)
 {
-    /* Open the file for reading */
     FILE *f = fopen(filename, "rb");
     if (f == NULL)
     {
@@ -49,8 +43,6 @@ struct Image *load_image(const char *filename)
         return NULL;
     }
 
-    /* Allocate the Image object, and read the image from the file */
-    /* TODO: Question 2b */
     struct Image *img = malloc(sizeof(struct Image));
     if (img == NULL)
     {
@@ -59,7 +51,6 @@ struct Image *load_image(const char *filename)
         return NULL;
     }
 
-    // Reading header
     char header[5];
     int width, height;
     if (fscanf(f, "%4s %d %d\n", header, &width, &height) != 3)
@@ -77,11 +68,9 @@ struct Image *load_image(const char *filename)
         return NULL;
     }
 
-    // Set image dimensions
     img->width = width;
     img->height = height;
 
-    // Allocate memory for the pixels
     img->pixels = malloc(sizeof(struct Pixel) * width * height);
     if (img->pixels == NULL)
     {
@@ -90,7 +79,6 @@ struct Image *load_image(const char *filename)
         fprintf(stderr, "Memory allocation for pixels of %s failed \n", filename);
     }
 
-    // Read pixel data
     size_t numPixels = width * height;
     size_t pixelData = fread(img->pixels, sizeof(struct Pixel), numPixels, f);
     if (pixelData != numPixels)
@@ -109,7 +97,6 @@ struct Image *load_image(const char *filename)
 /* Write img to file filename. Return true on success, false on error. */
 bool save_image(const struct Image *img, const char *filename)
 {
-    // Open the file to write to
     FILE *file = fopen(filename, "wb");
     if (file == NULL)
     {
@@ -117,10 +104,8 @@ bool save_image(const struct Image *img, const char *filename)
         return false;
     }
 
-    // Write the header
     fprintf(file, "HS16 %d %d\n", img->width, img->height);
 
-    // Write pixel data
     size_t numPixels = img->width * img->height;
     size_t pixelsWritten = fwrite(img->pixels, sizeof(struct Pixel), numPixels, file);
     if (pixelsWritten != numPixels)
@@ -144,11 +129,9 @@ struct Image *copy_image(const struct Image *source)
         return NULL;
     }
 
-    // Copy the image dimensions
     copy->width = source->width;
     copy->height = source->height;
 
-    // Allocate memory for the pixels
     copy->pixels = malloc(sizeof(struct Pixel) * source->width * source->height);
     if (copy->pixels == NULL)
     {
@@ -157,7 +140,6 @@ struct Image *copy_image(const struct Image *source)
         return NULL;
     }
 
-    // Use a loop to copy pixel data from source to copy
     for (int i = 0; i < source->width * source->height; i++)
     {
         copy->pixels[i] = source->pixels[i];
@@ -265,14 +247,12 @@ bool apply_CODE(const struct Image *source)
 
 int main(int argc, char *argv[])
 {
-    /* Check command-line arguments */
     if (argc != 4)
     {
         fprintf(stderr, "Usage: process INPUTFILE OUTPUTFILE NOISE_STRENGTH\n");
         return 1;
     }
 
-    /* Load the input image */
     struct Image *in_img = load_image(argv[1]);
     if (in_img == NULL)
     {
@@ -287,7 +267,6 @@ int main(int argc, char *argv[])
         return 1;
     }
 
-    /* Apply the first process */
     struct Image *out_img = apply_NOISE(in_img, noise_strength);
     if (out_img == NULL)
     {
@@ -296,7 +275,6 @@ int main(int argc, char *argv[])
         return 1;
     }
 
-    /* Apply the second process */
     if (!apply_CODE(out_img))
     {
         fprintf(stderr, "Second process failed.\n");
@@ -305,7 +283,6 @@ int main(int argc, char *argv[])
         return 1;
     }
 
-    /* Save the output image */
     if (!save_image(out_img, argv[2]))
     {
         fprintf(stderr, "Saving image to %s failed.\n", argv[2]);
