@@ -25,6 +25,16 @@ struct Image
     struct Pixel *pixels;
 };
 
+/* Linked list for processing multiple files from the CLI */
+struct ImageNode
+{
+    struct Image *img;
+    char *input_file;
+    char *output_file;
+    int noise_strength;
+    struct ImageNode *next;
+};
+
 /* Free a struct Image */
 void free_image(struct Image *img)
 {
