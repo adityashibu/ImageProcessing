@@ -89,9 +89,9 @@ struct Image *load_image(const char *filename)
         fprintf(stderr, "Memory allocation for pixels of %s failed \n", filename);
     }
 
-    size_t numPixels = width * height;
-    size_t pixelData = fread(img->pixels, sizeof(struct Pixel), numPixels, f);
-    if (pixelData != numPixels)
+    size_t num_Pixels = width * height;
+    size_t pixel_Data = fread(img->pixels, sizeof(struct Pixel), num_Pixels, f);
+    if (pixel_Data != num_Pixels)
     {
         fclose(f);
         free_image(img);
@@ -116,9 +116,9 @@ bool save_image(const struct Image *img, const char *filename)
 
     fprintf(file, "HS16 %d %d\n", img->width, img->height);
 
-    size_t numPixels = img->width * img->height;
-    size_t pixelsWritten = fwrite(img->pixels, sizeof(struct Pixel), numPixels, file);
-    if (pixelsWritten != numPixels)
+    size_t num_Pixels = img->width * img->height;
+    size_t pixels_Written = fwrite(img->pixels, sizeof(struct Pixel), num_Pixels, file);
+    if (pixels_Written != num_Pixels)
     {
         fprintf(stderr, "Error writing pixel data to %s \n", filename);
         return false;
@@ -175,43 +175,43 @@ struct Image *apply_NOISE(const struct Image *source, int noise_strength)
 
     for (int i = 0; i < source->width * source->height; i++)
     {
-        int noiseRed = rand() % (2 * noise_strength + 1) - noise_strength;
-        int noiseGreen = rand() % (2 * noise_strength + 1) - noise_strength;
-        int noiseBlue = rand() % (2 * noise_strength + 1) - noise_strength;
+        int noise_Red = rand() % (2 * noise_strength + 1) - noise_strength;
+        int noise_Green = rand() % (2 * noise_strength + 1) - noise_strength;
+        int noise_Blue = rand() % (2 * noise_strength + 1) - noise_strength;
 
-        int newRed = copy->pixels[i].red + noiseRed;
-        if (newRed < 0)
+        int new_Red = copy->pixels[i].red + noise_Red;
+        if (new_Red < 0)
         {
-            newRed = 0;
+            new_Red = 0;
         }
-        else if (newRed > 65535)
+        else if (new_Red > 65535)
         {
-            newRed = 65535;
-        }
-
-        int newGreen = copy->pixels[i].green + noiseGreen;
-        if (newGreen < 0)
-        {
-            newGreen = 0;
-        }
-        else if (newGreen > 65535)
-        {
-            newGreen = 65535;
+            new_Red = 65535;
         }
 
-        int newBlue = copy->pixels[i].blue + noiseBlue;
-        if (newBlue < 0)
+        int new_Green = copy->pixels[i].green + noise_Green;
+        if (new_Green < 0)
         {
-            newBlue = 0;
+            new_Green = 0;
         }
-        else if (newBlue > 65535)
+        else if (new_Green > 65535)
         {
-            newBlue = 65535;
+            new_Green = 65535;
         }
 
-        copy->pixels[i].red = (unsigned short)newRed;
-        copy->pixels[i].green = (unsigned short)newGreen;
-        copy->pixels[i].blue = (unsigned short)newBlue;
+        int new_Blue = copy->pixels[i].blue + noise_Blue;
+        if (new_Blue < 0)
+        {
+            new_Blue = 0;
+        }
+        else if (new_Blue > 65535)
+        {
+            new_Blue = 65535;
+        }
+
+        copy->pixels[i].red = (unsigned short)new_Red;
+        copy->pixels[i].green = (unsigned short)new_Green;
+        copy->pixels[i].blue = (unsigned short)new_Blue;
     }
     return copy;
 }
