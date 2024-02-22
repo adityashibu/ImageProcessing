@@ -1,5 +1,21 @@
 # Image processing in C
 
+## Overview of the Program
+
+- **apply_NOISE:** Applies random noise to the Image, adding a random value to the RGB components of the Image.
+
+- **apply_CODE:** reveals the source of the image in R,G,B format including the width and height, so you can copy the code on to another program if needed.
+
+## Using makefile to compile the code
+
+1. Make sure you're in the directory where the makefile is located.
+
+2. To run the make file, run `make` in your terminal (Assuming that the makefile and the process are both located at the same directory)
+
+3. Running the above command should create a new executable called **process** in the directory you're currently at.
+
+4. If you want to know how to compile the program using GCC, follow the below steps.
+
 ## Compiling the program using GCC
 
 1. Make sure you have (GNU C Compiler) installed on your machine
