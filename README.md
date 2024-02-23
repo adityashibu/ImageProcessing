@@ -1,5 +1,7 @@
 # Image processing in C
 
+**Coursework by Aditya Shibu - H00432130, BSc Computer Science with specialization in AI**
+
 ## Overview of the Program
 
 - **apply_NOISE:** Applies random noise to the Image, adding a random value to the RGB components of the Image.
@@ -59,3 +61,7 @@
      ```c
      ./hsconvert -f PPM coffee.hs16 coffee.ppm
      ```
+
+## Additional Notes
+
+- Memory Usage for the program, the program loads in all images into memory before processing. Ensure that

@@ -159,8 +159,10 @@ struct Image *copy_image(const struct Image *source)
 }
 
 /* Perform your first task.
- * (TODO: Write a better comment here, and rename the function.
- * You may need to add or change arguments depending on the task.)
+Applies noise to the image by adding a random number to the RGB values,
+creating a randomly noisy image. There are also cases to handle exceptions
+such as when the input image is not readable, when the input image is NULL
+and more.
  * Returns a new struct Image containing the result, or NULL on error. */
 struct Image *apply_NOISE(const struct Image *source, int noise_strength)
 {
@@ -217,8 +219,14 @@ struct Image *apply_NOISE(const struct Image *source, int noise_strength)
 }
 
 /* Perform your second task.
- * (TODO: Write a better comment here, and rename the function.
- * You may need to add or change arguments depending on the task.)
+ * This function prints the C code representation of the image to the terminal,
+ * allowing users to copy the image data into other programs while retaining
+ * the image's structure. The C code includes information about the image's
+ * dimensions and pixel values in RGB format.
+ *
+ * Parameters:
+ *   - source: Pointer to the struct Image containing the image data.
+ *
  * Returns true on success, or false on error. */
 bool apply_CODE(const struct Image *source)
 {
