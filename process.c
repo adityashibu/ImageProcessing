@@ -212,7 +212,7 @@ struct Image *apply_NOISE(const struct Image *source, int noise_strength)
         }
 
         copy->pixels[i].red = (unsigned short)new_Red;
-        copy->pixels[i].green = (unsigned short)new_Green;
+        copy->pixels[i].green = (unsigned    short)new_Green;
         copy->pixels[i].blue = (unsigned short)new_Blue;
     }
     return copy;

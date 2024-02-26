@@ -7,6 +7,9 @@
 *.obj
 *.elf
 
+# Image folder
+./images
+
 # Make files
 process
 
@@ -16,6 +19,8 @@ process
 # Image files
 *.hs16
 *.ppm
+*.hshex
+*.hs8
 
 # Linker output
 *.ilk
