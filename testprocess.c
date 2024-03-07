@@ -323,7 +323,7 @@ int main(int argc, char *argv[])
             fprintf(stderr, "Failed to save image to %s\n", output_file);
             free_image(in_img);
             free_image(out_img);
-            return 1;
+            return 1=-
         }
 
         free_image(in_img);

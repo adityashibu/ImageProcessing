@@ -117,6 +117,7 @@ bool save_image(const struct Image *img, const char *filename)
     fprintf(file, "HS16 %d %d\n", img->width, img->height);
 
     size_t num_Pixels = img->width * img->height;
+
     size_t pixels_Written = fwrite(img->pixels, sizeof(struct Pixel), num_Pixels, file);
     if (pixels_Written != num_Pixels)
     {
@@ -212,7 +213,7 @@ struct Image *apply_NOISE(const struct Image *source, int noise_strength)
         }
 
         copy->pixels[i].red = (unsigned short)new_Red;
-        copy->pixels[i].green = (unsigned    short)new_Green;
+        copy->pixels[i].green = (unsigned short)new_Green;
         copy->pixels[i].blue = (unsigned short)new_Blue;
     }
     return copy;
@@ -265,7 +266,7 @@ bool apply_CODE(const struct Image *source)
 
 int main(int argc, char *argv[])
 {
-    if (argc != 4)
+    if (argc != 4 || (argc - 1) % 3 != 0)
     {
         fprintf(stderr, "Usage: process INPUTFILE OUTPUTFILE NOISE_STRENGTH\n");
         return 1;
@@ -277,39 +278,92 @@ int main(int argc, char *argv[])
         return 1;
     }
 
-    int noise_strength;
-    if (sscanf(argv[3], "%d", &noise_strength) != 1)
+    int pairs = (argc - 1) / 3;
+
+    struct ImageNode *head = NULL;
+    struct ImageNode *current = NULL;
+
+    for (int i = 0; i < pairs; i++)
     {
-        fprintf(stderr, "Invalid noise strength: %s\n", argv[3]);
-        free_image(in_img);
-        return 1;
+        char *input_file = argv[i * 3 + 1];
+        char *output_file = argv[i * 3 + 2];
+        int noise_strength;
+
+        if (sscanf(argv[i * 3 + 3], "%d", &noise_strength) != 1)
+        {
+            fprintf(stderr, "Invalid noise strength: %s\n", argv[i * 3 + 3]);
+            return 1;
+        }
+
+        struct ImageNode *new_node = malloc(sizeof(struct ImageNode));
+        if (new_node == NULL)
+        {
+            fprintf(stderr, "Memoery allocation for new Image Node failed");
+            return 1;
+        }
+
+        struct Image *in_img = load_image(input_file);
+        if (in_img == NULL)
+        {
+            fprintf(stderr, "Error loading input image");
+            return 1;
+        }
+
+        new_node->img = in_img;
+        new_node->input_file = input_file;
+        new_node->output_file = output_file;
+        new_node->noise_strength = noise_strength;
+        new_node->next = NULL;
+
+        if (head == NULL)
+        {
+            head = new_node;
+            current = new_node;
+        }
+        else
+        {
+            current->next = new_node;
+            current = new_node;
+        }
     }
 
-    struct Image *out_img = apply_NOISE(in_img, noise_strength);
-    if (out_img == NULL)
+    current = head;
+    while (current != NULL)
     {
-        fprintf(stderr, "First process failed.\n");
-        free_image(in_img);
-        return 1;
-    }
+        struct Image *out_img = apply_NOISE(current->img, current->noise_strength);
+        if (out_img == NULL)
+        {
+            fprintf(stderr, "Error applying noise to the loaded image\n");
+            return 1;
+        }
 
-    if (!apply_CODE(out_img))
-    {
-        fprintf(stderr, "Second process failed.\n");
-        free_image(in_img);
+        if (!apply_CODE(out_img))
+        {
+            fprintf(stderr, "Error applying code to the loaded image\n");
+            free_image(out_img);
+            return 1;
+        }
+
+        if (!save_image(out_img, current->output_file))
+        {
+            fprintf(stderr, "Failed to save the image to %s\n", current->output_file);
+            free_image(out_img);
+            return 1;
+        }
+
         free_image(out_img);
-        return 1;
+
+        current = current->next;
     }
 
-    if (!save_image(out_img, argv[2]))
+    current = head;
+    while (current != NULL)
     {
-        fprintf(stderr, "Saving image to %s failed.\n", argv[2]);
-        free_image(in_img);
-        free_image(out_img);
-        return 1;
+        struct ImageNode *temp = current;
+        current = current->next;
+        free_image(temp->img);
+        free(temp);
     }
 
-    free_image(in_img);
-    free_image(out_img);
     return 0;
 }
