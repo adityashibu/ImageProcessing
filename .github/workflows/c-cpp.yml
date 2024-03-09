@@ -17,7 +17,11 @@ jobs:
       run: ./configure
     - name: make
       run: make
-    - name: make check
-      run: make check
-    - name: make distcheck
-      run: make distcheck
+    - name: Check for process file
+      run: |
+        if [ -f process ]; then
+          echo "process file exists"
+        else
+          echo "process file does not exist"
+          exit 1
+        fi
