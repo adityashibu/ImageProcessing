@@ -1,7 +1,5 @@
 # Image processing in C
 
-**Coursework by Aditya Shibu - H00432130, BSc Computer Science with specialization in AI**
-
 ## Overview of the Program
 
 - **apply_NOISE:** Applies random noise to the Image, adding a random value to the RGB components of the Image.
