@@ -62,4 +62,4 @@
 
 ## Additional Notes
 
-- Memory Usage for the program, the program loads in all images into memory before processing. Ensure that
+- Memory Usage for the program, the program loads in all images into memory before processing. 
